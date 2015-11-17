@@ -3,6 +3,7 @@
  *
  * @param {Function} fn 希望被延迟执行的函数
  * @param {Object} context 执行函数时上下文环境
+ * @param {...} args 执行调用多个参数
  * @access public
  * @return {Number} 等待执行的任务数
  *
