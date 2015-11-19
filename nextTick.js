@@ -24,38 +24,29 @@
 	var callbacks = []; //等待调用的函数栈
 	var running = false; //当前是否正在运行中
 	var slice = [].slice;
+	var setImmediate = window.setImmediate || function(fn) {
+		return window.setTimeout(fn, 0);
+	};
 
 	//调用所有在函数栈中的函数
 	//如果在执行某函数时又有新的函数被添加进来，
 	//该函数也会在本次调用的最后被执行
 	function callAllCallbacks() {
+		var cbs = callbacks;
+		callbacks = [];
+		running = false;
+
 		var count = callbacks.length;
 		for (var index = 0; index < count; index++) {
-
-			var callback = callbacks[index];
+			var callback = cbs[index];
 			var fn = callback[0];
 			var context = callback[1];
-			var args = callback[2];
-			fn.apply(context, args);
-		}
-		//删除已经调用过的函数
-		callbacks.splice(0, count);
-
-		//判断是否还有函数需要执行
-		//函数可能在 callAllCallbacks 调用的过程中被添加到 callbacks 数组
-		//所以需要再次判断
-		if (callbacks.length) {
-			setTimeout(callAllCallbacks, 0);
-		} else {
-			running = false;
+			fn.apply(context, callback.slice(2));
 		}
 	}
 
-	function nextTick(fn, context) {
-
-		context = context || window;
-
-		var callback = [fn, context, slice.call(arguments, 2)];
+	function nextTick(fn, context, args) {
+		var callback = slice.call(arguments);
 
 		//将函数存放到待调用栈中
 		callbacks.push(callback);
@@ -66,8 +57,9 @@
 		//本次添加的函数会在 callAllCallbacks 时被调用
 		if (!running) {
 			running = true;
-			setTimeout(callAllCallbacks, 0);
+			setImmediate(callAllCallbacks, 0);
 		}
+
 		return callbacks.length;
 	}
 
