@@ -19,14 +19,17 @@
  * // 1
  * // 2
  */
-(function (window, undefined) {
+'use strict';
+
+
+(function (global, undefined) {
 
 	var callbacks = []; //等待调用的函数栈
 	var running = false; //当前是否正在运行中
 	var slice = [].slice;
-	var setImmediate = window.setImmediate || function(fn) {
-		return window.setTimeout(fn, 0);
-	};
+	var setImmediate = global.setImmediate || function (fn) {
+			return global.setTimeout(fn, 0);
+		};
 
 	//调用所有在函数栈中的函数
 	//如果在执行某函数时又有新的函数被添加进来，
@@ -70,7 +73,7 @@
 			return nextTick;
 		});
 	} else {
-		window.nextTick = nextTick;
+		global.nextTick = nextTick;
 	}
 
-})(window);
+})(typeof global === 'object' ? global : window);
