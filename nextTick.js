@@ -36,7 +36,7 @@
 		callbacks = [];
 		running = false;
 
-		var count = callbacks.length;
+		var count = cbs.length;
 		for (var index = 0; index < count; index++) {
 			var callback = cbs[index];
 			var fn = callback[0];
