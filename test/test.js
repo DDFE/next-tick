@@ -3,7 +3,7 @@
  */
 
 var expect = require('chai').expect;
-var nextTick = require('../src/nextTick');
+var nextTick = require('../nextTick');
 
 describe('next-tick', function () {
 	it('callback length should equal to the nextTick called time', function (done) {
